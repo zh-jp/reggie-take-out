@@ -14,7 +14,7 @@ public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long id;    //主键为Long，默认采用雪花算法
 
     private String username;
 
