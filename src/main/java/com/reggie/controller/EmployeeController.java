@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
 
 @Slf4j
 @RestController
@@ -120,5 +119,21 @@ public class EmployeeController {
         queryWrapper.orderByDesc(Employee::getUpdateTime);
         employeeService.page(pageInf, queryWrapper);
         return R.success(pageInf);
+    }
+
+    /**
+     * 根据ID修改员工信息
+     *
+     * @param employee
+     * @return
+     */
+    @PutMapping
+    public R<String> update(HttpServletRequest httpServletRequest, @RequestBody Employee employee) {
+        log.info(employee.toString());
+        Long empId = (Long) httpServletRequest.getSession().getAttribute("employee");
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(empId);
+        employeeService.updateById(employee);
+        return R.success("员工信息修改成功");
     }
 }
