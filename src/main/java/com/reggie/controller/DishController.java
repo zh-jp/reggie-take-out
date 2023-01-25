@@ -1,6 +1,7 @@
 package com.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.reggie.common.R;
 import com.reggie.dto.DishDto;
@@ -12,7 +13,6 @@ import com.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +33,6 @@ public class DishController {
 
     @PostMapping
     public R<String> save(@RequestBody DishDto dishDto) {
-        log.info("dishDto:{}", dishDto.toString());
         dishService.saveWithFlavor(dishDto);
         return R.success("新增菜品成功");
     }
@@ -91,8 +90,41 @@ public class DishController {
      */
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto) {
-        log.info("dishDto:{}", dishDto.toString());
         dishService.updateWithFlavor(dishDto);
         return R.success("新增菜品成功");
     }
+
+    /**
+     * 逻辑删除菜品和口味
+     *
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids) {
+        for (Long id : ids) {
+            dishService.deleteWithFlavor(id);
+        }
+        return R.success("删除成功");
+    }
+
+    @PostMapping("/status/{status}")
+    public R<String> status(@PathVariable Integer status, @RequestParam List<Long> ids) {
+        LambdaUpdateWrapper<Dish> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.in(Dish::getId, ids);
+        updateWrapper.set(Dish::getStatus, status);
+        dishService.update(updateWrapper);
+        return R.success("状态变更成功");
+    }
+
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish) {
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        queryWrapper.eq(Dish::getStatus, 1); // 查询状态为1，即起售状态。
+        queryWrapper.orderByAsc(Dish::getStatus).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(queryWrapper);
+        return R.success(list);
+    }
+
 }

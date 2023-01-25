@@ -18,5 +18,8 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: ASSIGN_ID
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 reggie:
   path: D:\workspace\reggie-take-out\img\ #项目图片所在目录

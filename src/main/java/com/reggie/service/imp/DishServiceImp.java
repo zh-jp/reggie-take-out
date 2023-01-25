@@ -1,6 +1,7 @@
 package com.reggie.service.imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.reggie.dto.DishDto;
 import com.reggie.entity.Dish;
@@ -78,14 +79,20 @@ public class DishServiceImp extends ServiceImpl<DishMapper, Dish> implements Dis
         // 重新插入菜品口味信息，dish_flavor表的insert操作
         List<DishFlavor> flavors = dishDto.getFlavors();
 
-        for (DishFlavor i : flavors) {
-            log.info("mark:__________" + i.toString());
-        }
-
         flavors = flavors.stream().map((item) -> {
             item.setDishId(dishDto.getId());
             return item;
         }).collect(Collectors.toList());
         dishFlavorService.saveBatch(flavors);
+    }
+
+    @Override
+    public void deleteWithFlavor(Long id) {
+        if (this.getById(id) != null) {
+            this.removeById(id);
+            LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(DishFlavor::getDishId, id);
+            dishFlavorService.remove(queryWrapper);
+        }
     }
 }
