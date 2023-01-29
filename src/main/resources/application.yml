@@ -9,6 +9,18 @@ spring:
       url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: root
+  mail:
+    host: smtp.qq.com #发送邮件服务器
+    username: 1968380447@qq.com #发送邮件的邮箱地址
+    password: nvhnelyshzuxchca #客户端授权码，不是邮箱密码，这个在qq邮箱设置里面自动生成的
+    properties.mail.smtp.port: 465 #端口号465或587
+    from: 1968380447@qq.com # 发送邮件的地址，和上面username一致
+
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    default-encoding: utf-8
+
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
@@ -21,5 +33,18 @@ mybatis-plus:
       logic-delete-field: is_deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
+
 reggie:
   path: D:\workspace\reggie-take-out\img\ #项目图片所在目录
+  sms:
+    code_length: 6 #验证码长度
+    signName: 阿里云短信测试
+    templateCode: SMS_154950909
+  aliUser:
+    accessKeyId: LTAI5tSdbXkyXAuJqoJndigf
+    accessKeySecret: mRhCvhdUp3t9B0e0xhLZFFzu9YjUQK
+  mail:
+    host: smtp.qq.com
+    username: 1968380447@qq.com
+    password: wzhzjqeds21
+    default-encoding: utf-8
