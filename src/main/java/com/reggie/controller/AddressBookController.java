@@ -41,6 +41,12 @@ public class AddressBookController {
         return R.success(addressBook);
     }
 
+    /**
+     * 设置默认地址
+     *
+     * @param addressBook
+     * @return
+     */
     @PutMapping("/default")
     @Transactional
     public R<AddressBook> setDefault(@RequestBody AddressBook addressBook) {
@@ -59,6 +65,27 @@ public class AddressBookController {
         return R.success(addressBook);
     }
 
+    /**
+     * 获得默认地址
+     *
+     * @return
+     */
+    @GetMapping("/default")
+    public R<AddressBook> getDefault() {
+        Long usrId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AddressBook::getUserId, usrId);
+        queryWrapper.eq(AddressBook::getIsDefault, 1);
+        AddressBook addressBook = addressBookService.getOne(queryWrapper);
+        return R.success(addressBook);
+    }
+
+    /**
+     * 保存新地址簿
+     *
+     * @param addressBook
+     * @return
+     */
     @PostMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
         Long usrId = BaseContext.getCurrentId();

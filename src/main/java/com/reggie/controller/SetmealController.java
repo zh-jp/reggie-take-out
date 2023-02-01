@@ -7,12 +7,15 @@ import com.reggie.common.R;
 import com.reggie.dto.SetmealDto;
 import com.reggie.entity.Category;
 import com.reggie.entity.Setmeal;
+import com.reggie.entity.SetmealDish;
 import com.reggie.service.CategoryService;
+import com.reggie.service.SetmealDishService;
 import com.reggie.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,10 @@ import java.util.stream.Collectors;
 public class SetmealController {
     @Autowired
     private SetmealService setmealService;
+
+    @Autowired
+    private SetmealDishService setmealDishService;
+
     @Autowired
     private CategoryService categoryService;
 
@@ -95,5 +102,15 @@ public class SetmealController {
     public R<String> delete(@RequestParam List<Long> ids) {
         setmealService.removeWithDish(ids);
         return R.success("删除成功");
+    }
+
+    @GetMapping("/list")
+    public R<List<Setmeal>> list(Setmeal setmeal) {
+        Long categoryId = setmeal.getCategoryId();
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(categoryId != null, Setmeal::getCategoryId, categoryId);
+        queryWrapper.eq(Setmeal::getStatus, 1);
+        List<Setmeal> list = setmealService.list(queryWrapper);
+        return R.success(list);
     }
 }
