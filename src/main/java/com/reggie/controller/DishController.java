@@ -42,7 +42,7 @@ public class DishController {
     @GetMapping("/page")
     public R<Page> page(int page, int pageSize, String name) {
         // 构造分页构造器对象
-        Page<Dish> pageInfo = new Page(page, pageSize);
+        Page<Dish> pageInfo = new Page<>(page, pageSize);
         Page<DishDto> dishDtoPage = new Page<>();
         // 条件构造器
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
