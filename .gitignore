@@ -1,2 +1,3 @@
 /target/
-/src/test/*
+/src/test/java/Test.java
+/hello.txt
