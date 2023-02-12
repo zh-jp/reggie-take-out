@@ -11,11 +11,13 @@ import com.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
@@ -23,8 +25,14 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+
     @Autowired
     private MailService mailService;
+
+    // Redis服务类
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Value("${reggie.sms.code_length}")
     private Integer code_length;
 
@@ -73,7 +81,12 @@ public class UserController {
         if (!StringUtils.isEmpty(mail)) {
             Integer code = ValidateCodeUtils.generateValidateCode(code_length);
             // mailService.sendSimpleMail(mail, "验证码", code.toString());
-            request.getSession().setAttribute(mail, code);
+
+            // 在Session中设置验证码
+            // request.getSession().setAttribute(mail, code);
+
+            // 在Redis中设置验证码
+            redisTemplate.opsForValue().set(mail, code, 5L, TimeUnit.MINUTES);
             log.info("code:{}, mail:{}", code, mail);
             return R.success("验证码发送成功");
         }
@@ -92,10 +105,11 @@ public class UserController {
     public R<User> login(@RequestBody Map<String, String> map, HttpServletRequest request) {
         String mail = map.get("mail");
         String code = map.get("code");
-        Object object = request.getSession().getAttribute(mail);
+        // Object object = request.getSession().getAttribute(mail);
+        Object object = redisTemplate.opsForValue().get(mail);
         if (object != null && object.toString().equals(code)) {
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(mail != null, User::getMail, mail);
+            queryWrapper.eq(User::getMail, mail);
             User user = userService.getOne(queryWrapper);
             if (user == null) {
                 user = new User();
@@ -105,6 +119,7 @@ public class UserController {
 
             }
             request.getSession().setAttribute("user", user.getId());
+            redisTemplate.delete(mail);
             return R.success(user);
         }
         log.info(map.toString());

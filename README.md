@@ -4,7 +4,7 @@
 
 ## 技术栈
 
-`SpringBoot` `Mybatis-Plus` `MySQL`
+`SpringBoot` `Mybatis-Plus` `MySQL` `Redis`
 
 ## 实现功能
 
