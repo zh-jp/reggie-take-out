@@ -13,9 +13,11 @@ import com.reggie.service.SetmealDishService;
 import com.reggie.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,7 @@ public class SetmealController {
      * @param name
      * @return
      */
+    @Cacheable(value = "setmealCache", key = "#p0 + '_' +#p1 + '_' +#p2")
     @GetMapping("/page")
     public R<Page> page(Integer page, Integer pageSize, String name) {
         // 构造分页构造器对象器
@@ -70,18 +73,21 @@ public class SetmealController {
         return R.success(setmealDtoPage);
     }
 
+    @Cacheable(value = "setmealCache", key = "#p0", unless = "#result.code == 0")
     @GetMapping("/{id}")
     public R<SetmealDto> get(@PathVariable Long id) {
         SetmealDto setmealDto = setmealService.getByIdWithDish(id);
         return R.success(setmealDto);
     }
 
+    @CacheEvict(value = "setmealCache", allEntries = true)
     @PutMapping
     public R<String> update(@RequestBody SetmealDto setmealDto) {
         setmealService.updateWithDish(setmealDto);
         return R.success("更新成功！");
     }
 
+    @CacheEvict(value = "setmealCache", allEntries = true)
     @PostMapping("/status/{status}")
     public R<String> status(@PathVariable Integer status, @RequestParam List<Long> ids) {
 
@@ -92,18 +98,21 @@ public class SetmealController {
         return R.success("变更状态成功");
     }
 
+    @CacheEvict(value = "setmealCache", allEntries = true)
     @PostMapping
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         setmealService.saveWithDish(setmealDto);
         return R.success("保存成功！");
     }
 
+    @CacheEvict(value = "setmealCache", allEntries = true)
     @DeleteMapping
     public R<String> delete(@RequestParam List<Long> ids) {
         setmealService.removeWithDish(ids);
         return R.success("删除成功");
     }
 
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId")
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal) {
         Long categoryId = setmeal.getCategoryId();

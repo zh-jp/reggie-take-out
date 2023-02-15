@@ -2,11 +2,14 @@ package com.reggie.service.imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.reggie.dto.DishDto;
+import com.reggie.entity.Category;
 import com.reggie.entity.Dish;
 import com.reggie.entity.DishFlavor;
 import com.reggie.mapper.DishMapper;
+import com.reggie.service.CategoryService;
 import com.reggie.service.DishFlavorService;
 import com.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ import java.util.stream.Collectors;
 public class DishServiceImp extends ServiceImpl<DishMapper, Dish> implements DishService {
     @Autowired
     private DishFlavorService dishFlavorService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 新增菜品，同时保存口味数据
@@ -95,4 +101,27 @@ public class DishServiceImp extends ServiceImpl<DishMapper, Dish> implements Dis
             dishFlavorService.remove(queryWrapper);
         }
     }
+
+    @Override
+    public List<DishDto> getList(Dish dish) {
+        List<DishDto> dishDtoList = null;
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        queryWrapper.eq(Dish::getStatus, 1); // 查询状态为1，即起售状态。
+        queryWrapper.orderByAsc(Dish::getStatus).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = this.list(queryWrapper);
+        dishDtoList = list.stream().map((item) -> {
+            DishDto dishDto = new DishDto();
+            BeanUtils.copyProperties(item, dishDto);
+            Long dishId = item.getId();
+            LambdaQueryWrapper<DishFlavor> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(dishId != null, DishFlavor::getDishId, dishId);
+            queryWrapper.orderByAsc(Dish::getStatus).orderByDesc(Dish::getUpdateTime);
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(queryWrapper1);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+        return dishDtoList;
+    }
+
 }

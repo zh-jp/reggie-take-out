@@ -30,10 +30,17 @@ public class OrdersController {
 
     @PostMapping("/submit")
     public R<String> submit(@RequestBody Orders orders) {
-       ordersService.submit(orders);
+        ordersService.submit(orders);
         return R.success("提交成功！");
     }
 
+    /**
+     * 用户界面的订单分页查询
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/userPage")
     public R<Page> userPage(Integer page, Integer pageSize) {
         Long usrId = BaseContext.getCurrentId();
@@ -57,5 +64,21 @@ public class OrdersController {
         }).collect(Collectors.toList());
         ordersDtoPage.setRecords(records);
         return R.success(ordersDtoPage);
+    }
+
+    /**
+     * 管理后台的订单分页查询
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/page")
+    public R<Page> page(Integer page, Integer pageSize) {
+        Page<Orders> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(Orders::getStatus).orderByDesc(Orders::getOrderTime);
+        ordersService.page(pageInfo, queryWrapper);
+        return R.success(pageInfo);
     }
 }

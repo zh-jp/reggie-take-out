@@ -64,7 +64,7 @@ public class OrdersServiceImp extends ServiceImpl<OrdersMapper, Orders> implemen
                 (addressBook.getProvinceName() == null ? "" : addressBook.getProvinceName()) +
                         (addressBook.getCityName() == null ? "" : addressBook.getCityName()) +
                         (addressBook.getDetail() == null ? "" : addressBook.getDetail()));
-        // 暂时没有username
+        orders.setUserName(addressBook.getConsignee());
         orders.setConsignee(addressBook.getConsignee());
         this.save(orders);
         for (ShoppingCart i : shoppingCartList) {
