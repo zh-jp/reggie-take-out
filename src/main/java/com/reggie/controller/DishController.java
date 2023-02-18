@@ -79,6 +79,7 @@ public class DishController {
             }
             return dishDto;
         }).collect(Collectors.toList());
+        dishDtoPage.setRecords(list);
         return R.success(dishDtoPage);
     }
 

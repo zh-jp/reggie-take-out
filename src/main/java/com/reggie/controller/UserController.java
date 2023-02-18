@@ -72,15 +72,15 @@ public class UserController {
      * 发送邮箱验证码
      *
      * @param user
-     * @param request
+     * @param
      * @return
      */
     @PostMapping("/sendMail")
-    public R<String> sendMail(@RequestBody User user, HttpServletRequest request) {
+    public R<String> sendMail(@RequestBody User user) {
         String mail = user.getMail();
         if (!StringUtils.isEmpty(mail)) {
             Integer code = ValidateCodeUtils.generateValidateCode(code_length);
-            // mailService.sendSimpleMail(mail, "验证码", code.toString());
+            mailService.sendSimpleMail(mail, "用户登录验证码", code.toString());
 
             // 在Session中设置验证码
             // request.getSession().setAttribute(mail, code);
@@ -124,5 +124,11 @@ public class UserController {
         }
         log.info(map.toString());
         return R.error("验证码有误，请重试！");
+    }
+
+    @PostMapping("/loginout")
+    public R<String> loginout(HttpServletRequest request) {
+        request.getSession().removeAttribute("user");
+        return R.success("退出成功！");
     }
 }
