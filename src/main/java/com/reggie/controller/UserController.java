@@ -80,7 +80,7 @@ public class UserController {
         String mail = user.getMail();
         if (!StringUtils.isEmpty(mail)) {
             Integer code = ValidateCodeUtils.generateValidateCode(code_length);
-            mailService.sendSimpleMail(mail, "用户登录验证码", code.toString());
+            //mailService.sendSimpleMail(mail, "用户登录验证码", code.toString());
 
             // 在Session中设置验证码
             // request.getSession().setAttribute(mail, code);

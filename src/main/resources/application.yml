@@ -1,15 +1,18 @@
 server:
   port: 8080
+
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: reggie
   redis:
-    host: localhost
+    host: 192.168.153.129
     port: 6379
     #password: root
     database: 1
     jedis:
-      #redis 连接池
+      # redis 连接池
       pool:
         max-active: 8 # 最大连接数
         max-wait: 1ms #连接池最大阻塞等待时间
@@ -18,12 +21,43 @@ spring:
   cache:
     redis:
       time-to-live: 3600000 # 设置缓存过期时间
-  datasource:
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: root
+      # 使用读写分离（shardingsphere）代替
+  shardingsphere:
+    datasource:
+      names:
+        master,slave
+      # 主数据源
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/reggie?characterEncoding=utf-8
+        username: root
+        password: root
+      # 从数据源
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.153.129:3306/reggie?characterEncoding=utf-8
+        username: root
+        password: root
+    masterslave:
+      # 读写分离配置
+      load-balance-algorithm-type: round_robin
+      # 最终的数据源名称
+      name: dataSource
+      # 主库数据源名称
+      master-data-source-name: master # 指定主库
+      # 从库数据源名称列表，多个逗号分隔
+      slave-data-source-names: slave  # 指定从库
+    props:
+      sql:
+        show: true #开启SQL显示，默认false
+  #  datasource:
+  #    druid:
+  #      driver-class-name: com.mysql.cj.jdbc.Driver
+  #      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+  #      username: root
+  #      password: root
   mail:
     host: smtp.qq.com #发送邮件服务器
     username: 1968380447@qq.com #发送邮件的邮箱地址

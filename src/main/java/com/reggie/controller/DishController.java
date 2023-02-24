@@ -7,9 +7,7 @@ import com.reggie.common.R;
 import com.reggie.dto.DishDto;
 import com.reggie.entity.Category;
 import com.reggie.entity.Dish;
-import com.reggie.entity.DishFlavor;
 import com.reggie.service.CategoryService;
-import com.reggie.service.DishFlavorService;
 import com.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -34,11 +32,7 @@ public class DishController {
     private DishService dishService;
 
     @Autowired
-    private DishFlavorService dishFlavorService;
-
-    @Autowired
     private CategoryService categoryService;
-
 //    @Autowired
 //    private RedisTemplate redisTemplate;
 
