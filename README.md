@@ -6,9 +6,9 @@
 
 > 黑马程序员Java项目实战《瑞吉外卖》
 
-## 技术栈
+## 相关技术
 
-`SpringBoot` `Mybatis-Plus` `MySQL` `Redis`
+`SpringBoot` `Mybatis-Plus` `MySQL` `Redis` `Docker`
 
 ## 实现功能
 
@@ -19,9 +19,10 @@
 
 ## 亮点
 
-- 使用`Mybatis-Plus`技术，简化数据库操作，提高开发效率。
-- 使用`Redis`技术，实现缓存功能，提高数据查询效率。
-
+- 使用`Mybatis-Plus`技术简化数据库操作，提高开发效率。
+- 使用`Redis`技术实现缓存功能，提高数据查询效率。
+- 使用主从数据库实现读写分离，缓解数据访问压力。
+- 使用`Docker`部署运行环境，方便管理。
 ## 对比原项目的改进
 
 0. 删改了少量代码
