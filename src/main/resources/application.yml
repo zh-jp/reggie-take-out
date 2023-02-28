@@ -85,7 +85,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 reggie:
-  path: D:\workspace\reggie-take-out\img\ #项目图片所在目录
+  path: D:\workspace\reggie-take-out\project\img\
   sms:
     code_length: 6 #验证码长度
     signName: 阿里云短信测试

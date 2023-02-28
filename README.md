@@ -1,14 +1,23 @@
-下载后使用`IntelliJ IDEA`打开即可
-
----
-
 # reggie-take-out
 
 > 黑马程序员Java项目实战《瑞吉外卖》
+>
+
+## 目录
+
+- `.idea`:IDE配置文件
+- `img`: 项目图片文件
+- `src`: 项目源代码与资源
+- `static`: 前端页面，请部署在nginx中
+- `target`: 生成的目标文件
+
+> 更多配置细节如Rediss、MySQL请根据
+> `src/main/resources/application.yml`文件
+---
 
 ## 相关技术
 
-`SpringBoot` `Mybatis-Plus` `MySQL` `Redis` `Docker`
+`SpringBoot` `Mybatis-Plus` `MySQL` `Redis` `Docker` `Nginx`
 
 ## 实现功能
 
@@ -23,9 +32,9 @@
 - 使用`Redis`技术实现缓存功能，提高数据查询效率。
 - 使用主从数据库实现读写分离，缓解数据访问压力。
 - 使用`Docker`部署运行环境，方便管理。
+- 前后端分离部署，便于维护
 ## 对比原项目的改进
 
 0. 删改了少量代码
 1. 用户界面中，用`邮箱验证登录`代替`手机验证登录`
 
-## 总结
