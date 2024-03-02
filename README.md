@@ -5,10 +5,9 @@
 
 ## 目录
 
-- `.idea`:IDE配置文件
 - `img`: 项目图片文件
 - `src`: 项目源代码与资源
-- `static`: 前端页面，请部署在nginx中
+- `static`: 前端页面，请部署在nginx中，解压`/static.zip` 为 `static/backend` 和 `static/front`
 - `target`: 生成的目标文件
 
 > 更多配置细节如Rediss、MySQL请根据
