@@ -9,3 +9,6 @@
 /target/project-1.0-SNAPSHOT.jar.original
 /src/test/java/Test.java
 /hello.txt
+
+.idea
+/target

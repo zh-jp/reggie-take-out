@@ -44,8 +44,8 @@ public class AddressBookController {
     /**
      * 设置默认地址
      *
-     * @param addressBook
-     * @return
+     * @param addressBook 地址簿
+     * @return 结果类
      */
     @PutMapping("/default")
     @Transactional
@@ -68,7 +68,7 @@ public class AddressBookController {
     /**
      * 获得默认地址
      *
-     * @return
+     * @return 结果类
      */
     @GetMapping("/default")
     public R<AddressBook> getDefault() {
@@ -83,8 +83,8 @@ public class AddressBookController {
     /**
      * 保存新地址簿
      *
-     * @param addressBook
-     * @return
+     * @param addressBook 地址簿
+     * @return 结果类
      */
     @PostMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
@@ -96,9 +96,7 @@ public class AddressBookController {
 
     @DeleteMapping
     public R<String> remove(@RequestParam List<Long> ids) {
-        for (Long id : ids) {
-            addressBookService.removeById(id);
-        }
+        addressBookService.removeByIds(ids);
         return R.success("删除成功！");
     }
 }
